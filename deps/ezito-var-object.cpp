@@ -268,6 +268,15 @@ void Ezito::Var::Object::Set(int index , void * value){
 }
 
 
+
+
+
+
+
+
+
+
+
 void Ezito::Var::Object::Set(const char* name, Ezito::Var::int16_t value){
     if(this->val.IsObject()){
         this->val.ResetAsObject();
@@ -365,6 +374,34 @@ void Ezito::Var::Object::Set(const char* name, Ezito::Var::un_int64_t value){
     );
 }
 
+void Ezito::Var::Object::Set(const char* name, double value){
+    if(this->val.IsObject()){
+        this->val.ResetAsObject();
+    }
+
+    this->val.AsObject()->Set(
+        Ezito::Node::Context(),
+        Ezito::Var(name),
+        Ezito::Var::CreateValue(value)
+    );
+}
+
+void Ezito::Var::Object::Set(const char* name, float value){
+    if(this->val.IsObject()){
+        this->val.ResetAsObject();
+    }
+
+    this->val.AsObject()->Set(
+        Ezito::Node::Context(),
+        Ezito::Var(name),
+        Ezito::Var::CreateValue(value)
+    );
+}
+
+
+
+
+
 void Ezito::Var::Object::Set(const char* name, Ezito::Var value){
     if(this->val.IsObject()){
         this->val.ResetAsObject();
@@ -412,7 +449,18 @@ void Ezito::Var::Object::Set(const char* name, v8::MaybeLocal<v8::Value> value){
     );  
 }
 
-
+void Ezito::Var::Object::Set(const char* name, const char* value){
+    if(this->val.IsObject()){
+        this->val.ResetAsObject();
+    }
+    
+    Var val(value);
+    this->val.AsObject()->Set(
+        Ezito::Node::Context(),
+        Ezito::Var(name),
+       val.Context()
+    );  
+}
 
 void Ezito::Var::Object::Set(const char* name, void * value){
     if(this->val.IsObject()){
