@@ -6,7 +6,11 @@ const sourceDir = path.join(__dirname , "deps");
 const includeDir = path.join(__dirname , "deps");
   
 
-module.exports.include_dir = includeDir;
+module.exports.include_dir = (function(){
+    const root = process.cwd();
+    const include_dir = includeDir.slice(root.length).replace(/\\/g , "/"); 
+    return  (include_dir[0] == "/" ? include_dir.slice(1) : include_dir);
+})();
 
 module.exports.include = fs.readdirSync(sourceDir).map( function(src){ 
     if(["cpp",".cpp",".cc","cc"].includes(path.extname(src))){ 
