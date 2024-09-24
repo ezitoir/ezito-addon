@@ -538,6 +538,10 @@ Ezito::Var Ezito::Var::Object::operator[](const char * key) {
     );
 }
 
+v8::Local<v8::Object> Ezito::Var::Object::v8(){ 
+    return this->val.AsObject();
+}
+
 
 Ezito::Var::Object Ezito::Var::Object::operator=(const Ezito::Var::Object& value){
     this->val = value.val; 

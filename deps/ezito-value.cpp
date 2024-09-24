@@ -1281,7 +1281,7 @@ Value Value::operator [](const char* key){
     return Value();
 }
 
-Value Value::operator[](int index){
+Value Value::operator[](Value::int32_t index){
  
     if(!this->IsEmpty() && this->IsArray()){
         int length = this->AsArray()->Length();
@@ -1296,7 +1296,30 @@ Value Value::operator[](int index){
 
     if(!this->IsEmpty() && this->IsString()){
         const char * str = Value::GetCppValue( this->AsString());
-        if(index >= std::strlen(str)) return Value();
+        if(static_cast<Value::un_int32_t>(index) >= std::strlen(str)) return Value();
+        return Value(str[index]);
+    }
+
+    return Value();
+}
+
+
+Value Value::operator[](Value::l_int32_t index){
+ 
+    if(!this->IsEmpty() && this->IsArray()){
+        int length = this->AsArray()->Length();
+        if(index >= length ) return Value();
+        return Value (
+            this->AsArray()->Get(
+                v8::Isolate::GetCurrent()->GetCurrentContext(),
+                index
+            )
+        );
+    }
+
+    if(!this->IsEmpty() && this->IsString()){
+        const char * str = Value::GetCppValue( this->AsString());
+        if(static_cast<Value::un_l_int32_t>(index) >= std::strlen(str)) return Value();
         return Value(str[index]);
     }
 

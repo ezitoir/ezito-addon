@@ -70,6 +70,9 @@ v8::Local<v8::Value> Ezito::Var::Array::Context() {
     return this->val;
 }
 
+v8::Local<v8::Array> Ezito::Var::Array::v8(){ 
+    return this->val.AsArray();
+}
 
 bool Ezito::Var::Array::IsEmpty() {
     return this->val.IsEmpty() || !this->val.IsArray();

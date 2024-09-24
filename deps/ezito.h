@@ -808,7 +808,8 @@ class Value {
     Value operator=(const Value* value);
 
     Value operator [](const char*);
-    Value operator [](int);
+    Value operator [](Value::int32_t);
+    Value operator [](Value::l_int32_t);
 };
 
 
@@ -893,11 +894,11 @@ namespace Ezito {
         Var(Boolean); 
         Var(Number);
         Var(Undefined);
-        Var(Null);
+        Var(Null); 
         using Value::Value;
         operator Value();
         operator Value() const;
-
+ 
         class Object {
             protected:
             Value val;
@@ -911,6 +912,7 @@ namespace Ezito {
             Object(v8::MaybeLocal<v8::Value>);
             ~Object();
             v8::Local<v8::Value> Context();
+            v8::Local<v8::Object> v8();
             bool IsEmpty();
             void CppValue() = delete;
 
@@ -982,10 +984,9 @@ namespace Ezito {
             operator bool() = delete;
             operator bool() const = delete;
 
-            Ezito::Var operator[](const char *);
-
             Ezito::Var::Object operator=(const Ezito::Var::Object& value);
             Ezito::Var::Object operator=(const Ezito::Var::Object* value);
+            Ezito::Var operator[](const char *);
             
 
 
@@ -999,8 +1000,8 @@ namespace Ezito {
         class Array {
             protected:
             Value val;
-            long int length;
             public:
+            long int length;
             Array();
             Array(const Array *);
             Array(const Array &);
@@ -1010,6 +1011,7 @@ namespace Ezito {
             Array(v8::MaybeLocal<v8::Value>);
             ~Array();
             v8::Local<v8::Value> Context();
+            v8::Local<v8::Array> v8();
             bool IsEmpty();
             void CppValue() = delete;
         
@@ -1048,11 +1050,9 @@ namespace Ezito {
             operator bool() const = delete;
             
             Ezito::Var::Array operator=(const Ezito::Var::Array& value);
-            Ezito::Var::Array operator=(const Ezito::Var::Array* value);
-
-            Ezito::Var operator[](int);
-
-
+            Ezito::Var::Array operator=(const Ezito::Var::Array* value); 
+            Ezito::Var operator[](int); 
+            
 
         };
 

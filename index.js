@@ -3,10 +3,10 @@ require("./merge")
 const path = require("path"); 
 const fs = require("fs");
 const sourceDir = path.join(__dirname , "deps");
+const includeDir = path.join(__dirname , "deps");
+  
 
- 
-module.exports.gyp = sourceDir;
- 
+module.exports.include_dir = includeDir;
 
 module.exports.include = fs.readdirSync(sourceDir).map( function(src){ 
     if(["cpp",".cpp",".cc","cc"].includes(path.extname(src))){ 
@@ -34,3 +34,4 @@ module.exports.ezito = (function(){
     const sourceFile = path.join(__dirname , "ezito.cpp").slice(root.length).replace(/\\/g , "/");
     return  (sourceFile[0] == "/" ? sourceFile.slice(1) : sourceFile);
 })();
+module.exports.source = module.exports.ezito;

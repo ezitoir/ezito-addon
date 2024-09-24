@@ -52,7 +52,7 @@ Ezito::TypeOf::operator char*()const {return (char *)this->str.data();};
 
 Ezito::Node::Throw::Throw( const char * error){
     Ezito::Node::Isolate isolate; 
-    #if NODE_MAJOR_VERSION >= 12
+    #if NODE_MAJOR_VERSION >= 16
     isolate->ThrowError(Ezito::Var(error));
     #else
     isolate->ThrowException(Ezito::Var(error));
