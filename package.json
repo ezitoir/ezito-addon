@@ -1,0 +1,37 @@
+{
+    "name": "ezito-addon",
+    "version": "1.0.0",
+    "description": "Easier to use than v8 and node for nodejs ",
+    "main": "index.js",
+    "keywords": [
+        "v8",
+        "node",
+        "cpp",
+        "class",
+        "v8.h",
+        "node.h",
+        "variable"
+    ],
+    "files": [
+        "deps/*",
+        "ezito.cpp",
+        "index.js",
+        "merge.js",
+        "package.json",
+        "README.md"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ezitoir/ezito-addon.git"
+    },
+    "author": "Muhammad Ali Aghajanpour <ezitoir@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ezitoir/ezito-addon/issues"
+    },
+    "homepage": "https://github.com/ezitoir/ezito-addon#readme",
+    "gypfile": true
+}
