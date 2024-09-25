@@ -67,6 +67,15 @@ Ezito::Var::Number::Number(const Ezito::Var::Number & value) {
 
 
 
+Ezito::Var::Number::Number(Value value){
+    if(!value.IsEmpty() && value.IsNumber()){
+        this->val = value;
+        return;
+    };
+    this->val = Ezito::Var::Undefined().Context();
+}
+
+
 Ezito::Var::Number::Number(Ezito::Var value) { 
     if(!value.IsEmpty() && value.IsNumber()){
         this->val = value;
@@ -136,7 +145,44 @@ v8::Local<v8::Value> Ezito::Var::Number::Context(){
     return this->val;
 }
 
+Ezito::Var Ezito::Var::Number::Var(){
+    return this->val;
+}
 
+v8::Local<v8::Number> Ezito::Var::Number::v8(){
+    return this->val.AsNumber();
+}
+
+
+Ezito::Var Ezito::Var::Number::prototypeCall(const char * name, int count , ...){
+    Ezito::Global global("Number");
+    Ezito::Var::Object prototype(global.Get("prototype"));
+
+    Ezito::Var proto(prototype[name]);
+    if(proto.IsFunction()){
+        Ezito::Var::Function protoFn(proto);
+        if(count > 0){
+            v8::Local<v8::Value> * argv = new v8::Local<v8::Value>[count]();
+            va_list args; 
+            va_start(args, count);
+            for (int i = 0; i < count; i++){
+                argv[i] = static_cast<v8::Local<v8::Value>>(va_arg(args, Value));
+            }
+            va_end(args); 
+            Ezito::Var result = protoFn.v8()->Call(
+                Ezito::Node::Context() ,
+                this->Var(),
+                count,
+                count > 0 ? argv : NULL
+            );
+            delete[] argv;
+            return result;
+        } 
+    }
+
+    return Ezito::Var();
+}
+ 
 
 bool Ezito::Var::Number::IsEmpty() {
     return this->val.IsEmpty() || !this->val.IsNumber(); 
@@ -895,7 +941,9 @@ Ezito::Var::Number Ezito::Var::Number::operator=(const Ezito::Var::Number* value
 }
 
 
-
+v8::Local<v8::Number> Ezito::Var::Number::operator->(){
+    return this->val.AsNumber() ;
+}
 
 
 Ezito::Var::Number::~Number(){}

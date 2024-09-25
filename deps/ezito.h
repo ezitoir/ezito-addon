@@ -898,23 +898,59 @@ namespace Ezito {
         using Value::Value;
         operator Value();
         operator Value() const;
+
+
+        Ezito::Var::String ToString();
+        Ezito::Var::Number ToNumber();
+        Ezito::Var::Function ToFunction();
+        Ezito::Var::Object ToObject();  
+        Ezito::Var::Boolean ToBoolean();
+
+
+
+
+
+
+
+
+
  
         class Object {
             protected:
             Value val;
             public:
+            /**
+             * set to undefined
+             * when set var to constructor , value checked , if not empty change to object
+             */
             Object();
             Object(const Object *);
             Object(const Object &);
+            Object(Value);
             Object(Ezito::Var);
             Object(v8::Local<v8::Value>);
             Object(v8::Local<v8::Object>);
             Object(v8::MaybeLocal<v8::Value>);
-            ~Object();
-            v8::Local<v8::Value> Context();
-            v8::Local<v8::Object> v8();
+            ~Object(); 
             bool IsEmpty();
             void CppValue() = delete;
+            /**
+             * return context of value
+             */
+            v8::Local<v8::Value> Context(); 
+            /**
+             * return this.Context() as v8::Local<v8::String>
+             */
+            v8::Local<v8::Object> v8();
+            /**
+             * return this.val
+             */
+            Ezito::Var Var(); 
+            /**
+             * call of prototype like String.prototype.slice.call(...);
+             */
+            Ezito::Var prototypeCall(const char * , int count , ...);
+
 
             void Set(int , const char*);
 
@@ -986,11 +1022,19 @@ namespace Ezito {
 
             Ezito::Var::Object operator=(const Ezito::Var::Object& value);
             Ezito::Var::Object operator=(const Ezito::Var::Object* value);
-            Ezito::Var operator[](const char *);
-            
+            Ezito::Var operator[](const char *); 
+            v8::Local<v8::Object> operator->();
 
 
         };
+
+
+
+
+
+
+
+
 
 
 
@@ -1005,15 +1049,31 @@ namespace Ezito {
             Array();
             Array(const Array *);
             Array(const Array &);
+            Array(Value);
             Array(Ezito::Var);
             Array(v8::Local<v8::Value>);
             Array(v8::Local<v8::Array>);
             Array(v8::MaybeLocal<v8::Value>);
-            ~Array();
-            v8::Local<v8::Value> Context();
-            v8::Local<v8::Array> v8();
+            ~Array(); 
             bool IsEmpty();
             void CppValue() = delete;
+
+            /**
+             * return context of value
+             */
+            v8::Local<v8::Value> Context(); 
+            /**
+             * return this.Context() as v8::Local<v8::String>
+             */
+            v8::Local<v8::Array> v8();
+            /**
+             * return this.val
+             */
+            Ezito::Var Var(); 
+            /**
+             * call of prototype like String.prototype.slice.call(...);
+             */
+            Ezito::Var prototypeCall(const char * , int count , ...);
         
             void Push(char*);
             void Push(const char*);
@@ -1052,8 +1112,7 @@ namespace Ezito {
             Ezito::Var::Array operator=(const Ezito::Var::Array& value);
             Ezito::Var::Array operator=(const Ezito::Var::Array* value); 
             Ezito::Var operator[](int); 
-            
-
+            v8::Local<v8::Array> operator->(); 
         };
 
         
@@ -1063,12 +1122,14 @@ namespace Ezito {
             protected:
             Value val;
             public:
+            Ezito::Var::un_l_int32_t length;
             String();
             String(char);
             String(char *);
             String(const char *);
             String(const String *);
             String(const String &);
+            String(Value);
             String(Ezito::Var);
             String(v8::Local<v8::Value>);
             String(v8::Local<v8::String>);
@@ -1078,6 +1139,18 @@ namespace Ezito {
             v8::Local<v8::Value> Context();
             bool IsEmpty();
             const char * CppValue();
+            /**
+             * return this.Context() as v8::Local<v8::String>
+             */
+            v8::Local<v8::String> v8();
+            /**
+             * return this.val
+             */
+            Ezito::Var Var(); 
+            /**
+             * call of prototype like String.prototype.slice.call(...);
+             */
+            Ezito::Var prototypeCall(const char * , int count , ...);
 
             operator Ezito::Var();
             operator Ezito::Var() const;
@@ -1101,14 +1174,18 @@ namespace Ezito {
             operator double() const = delete;
             operator bool() = delete;
             operator bool() const = delete;
-            Ezito::Var operator[](int);
+            
 
             Ezito::Var::String operator=(const Ezito::Var::String & value);
             Ezito::Var::String operator=(const Ezito::Var::String * value);
-            
+            Ezito::Var::String operator=(const char *);
+            Ezito::Var operator[](int);
+            v8::Local<v8::String> operator->(); 
         };
 
 
+
+        
         class Number {
             protected:
             Value val;
@@ -1121,6 +1198,7 @@ namespace Ezito {
             Number(float);
             Number(const Number *);
             Number(const Number &);
+            Number(Value);
             Number(Ezito::Var);
             Number(v8::Local<v8::Value>);
             Number(v8::Local<v8::Int32>);
@@ -1130,11 +1208,26 @@ namespace Ezito {
             Number(v8::Local<v8::BigIntObject>);
             #endif
             Number(v8::MaybeLocal<v8::Value>);
-            ~Number();
-            v8::Local<v8::Value> Context();
+            ~Number(); 
             bool IsEmpty();
             bool haveDecimal();
             const double CppValue();
+            /**
+             * return context of value
+             */
+            v8::Local<v8::Value> Context(); 
+            /**
+             * return this.Context() as v8::Local<v8::String>
+             */
+            v8::Local<v8::Number> v8();
+            /**
+             * return this.val
+             */
+            Ezito::Var Var(); 
+            /**
+             * call of prototype like String.prototype.slice.call(...);
+             */
+            Ezito::Var prototypeCall(const char * , int count , ...);
 
             operator Ezito::Var();
             operator Ezito::Var() const;
@@ -1215,11 +1308,6 @@ namespace Ezito {
             Number operator *(const Ezito::Var::Number & value);
             Number operator *(const Ezito::Var::Number * value); 
 
-
-            Ezito::Var::Number operator=(const Ezito::Var::Number & value);
-            Ezito::Var::Number operator=(const Ezito::Var::Number * value);
-
-
             bool operator ==(int);
             bool operator ==(long int);
             bool operator ==(long long int); 
@@ -1228,6 +1316,11 @@ namespace Ezito {
             bool operator ==(const Ezito::Var::Number & value);
             bool operator ==(const Ezito::Var::Number * value);
 
+            Ezito::Var::Number operator=(const Ezito::Var::Number & value);
+            Ezito::Var::Number operator=(const Ezito::Var::Number * value);
+            v8::Local<v8::Number> operator->();  
+
+            
         };
 
 
@@ -1241,13 +1334,16 @@ namespace Ezito {
             Boolean(const Boolean *);
             Boolean(const Boolean &);
             Boolean(Ezito::Var);
+            Boolean(Value);
             Boolean(v8::Local<v8::Value>);
             Boolean(v8::Local<v8::Boolean>);
             Boolean(v8::MaybeLocal<v8::Value>);
             ~Boolean();
             v8::Local<v8::Value> Context();
+            v8::Local<v8::Boolean> v8();
             bool IsEmpty();
             const bool CppValue();
+            Ezito::Var Var();
 
 
             operator Ezito::Var();
@@ -1286,6 +1382,7 @@ namespace Ezito {
             Function();
             Function(const Function *);
             Function(const Function &);
+            Function(Value);
             Function(Ezito::Var);
             Function(v8::Local<v8::Value>);
             Function(v8::Local<v8::Function>);
@@ -1305,11 +1402,25 @@ namespace Ezito {
             Function(Ezito::FunctionCallbackWithReturnVar , const char * );
             Function(Ezito::FunctionCallbackWithReturnVar2 , const char * , v8::Local<v8::Value>);  
             Function(Ezito::FunctionCallbackWithReturnVar3 , const char * , void * data);
-            ~Function();
-
-            v8::Local<v8::Value> Context();
+            ~Function(); 
             bool IsEmpty();
             void CppValue() = delete;
+            /**
+             * return context of value
+             */
+            v8::Local<v8::Value> Context(); 
+            /**
+             * return this.Context() as v8::Local<v8::String>
+             */
+            v8::Local<v8::Function> v8();
+            /**
+             * return this.val
+             */
+            Ezito::Var Var(); 
+            /**
+             * call of prototype like String.prototype.slice.call(...);
+             */
+            Ezito::Var prototypeCall(const char * , int count , ...);
 
             Ezito::Var Call();
             Ezito::Var Call(int count , ...);
@@ -1592,8 +1703,9 @@ namespace Ezito {
         class String;
         class Process;
         Global();
+        Global(const char *);
         ~Global();
-
+        Ezito::Var Get(const char *);
 
 
         class String {

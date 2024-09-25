@@ -18,6 +18,14 @@ Ezito::Var::Object::Object(const Ezito::Var::Object & value) {
     this->val = value.val;
 }
 
+Ezito::Var::Object::Object(Value value){
+    if(!value.IsEmpty() && value.IsObject()){
+        this->val = value;
+        return;
+    };
+    this->val = Ezito::Var::Undefined().Context();
+}
+
 Ezito::Var::Object::Object(Ezito::Var value){
     if(!value.IsEmpty() && value.IsObject()){
         this->val = value;
@@ -244,7 +252,7 @@ void Ezito::Var::Object::Set(int index, v8::MaybeLocal<v8::Value> value){
         this->val.ResetAsObject();
     }
     
-    Var val(value);
+    Ezito::Var val(value);
     this->val.AsObject()->Set(
         Ezito::Node::Context(),
         index,
@@ -259,7 +267,7 @@ void Ezito::Var::Object::Set(int index , void * value){
         this->val.ResetAsObject();
     }
     
-    Var val(value);
+    Ezito::Var val(value);
     this->val.AsObject()->Set(
         Ezito::Node::Context(),
         index ,
@@ -272,6 +280,35 @@ void Ezito::Var::Object::Set(int index , void * value){
 
 
 
+Ezito::Var Ezito::Var::Object::prototypeCall(const char * name, int count , ...){
+    Ezito::Global global("Object");
+    Ezito::Var::Object prototype(global.Get("prototype"));
+
+    Ezito::Var proto(prototype[name]);
+    if(proto.IsFunction()){
+        Ezito::Var::Function protoFn(proto);
+        if(count > 0){
+            v8::Local<v8::Value> * argv = new v8::Local<v8::Value>[count]();
+            va_list args; 
+            va_start(args, count);
+            for (int i = 0; i < count; i++){
+                argv[i] = static_cast<v8::Local<v8::Value>>(va_arg(args, Value));
+            }
+            va_end(args); 
+            Ezito::Var result = protoFn.v8()->Call(
+                Ezito::Node::Context() ,
+                this->Var(),
+                count,
+                count > 0 ? argv : NULL
+            );
+            delete[] argv;
+            return result;
+        } 
+    }
+
+    return Ezito::Var();
+}
+ 
 
 
 
@@ -441,7 +478,7 @@ void Ezito::Var::Object::Set(const char* name, v8::MaybeLocal<v8::Value> value){
         this->val.ResetAsObject();
     }
     
-    Var val(value);
+    Ezito::Var val(value);
     this->val.AsObject()->Set(
         Ezito::Node::Context(),
         Ezito::Var(name),
@@ -454,7 +491,7 @@ void Ezito::Var::Object::Set(const char* name, const char* value){
         this->val.ResetAsObject();
     }
     
-    Var val(value);
+    Ezito::Var val(value);
     this->val.AsObject()->Set(
         Ezito::Node::Context(),
         Ezito::Var(name),
@@ -467,7 +504,7 @@ void Ezito::Var::Object::Set(const char* name, void * value){
         this->val.ResetAsObject();
     }
     
-    Var val(value);
+    Ezito::Var val(value);
     this->val.AsObject()->Set(
         Ezito::Node::Context(),
         Ezito::Var(name),
@@ -542,6 +579,9 @@ v8::Local<v8::Object> Ezito::Var::Object::v8(){
     return this->val.AsObject();
 }
 
+Ezito::Var Ezito::Var::Object::Var(){
+    return this->val;
+}
 
 Ezito::Var::Object Ezito::Var::Object::operator=(const Ezito::Var::Object& value){
     this->val = value.val; 
@@ -553,8 +593,11 @@ Ezito::Var::Object Ezito::Var::Object::operator=(const Ezito::Var::Object* value
 }
 
 
+v8::Local<v8::Object> Ezito::Var::Object::operator->(){
+    return this->val.AsObject() ;
+}
 
-
+ 
 
 Ezito::Var::Object::~Object(){}
 

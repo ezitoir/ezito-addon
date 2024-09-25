@@ -170,12 +170,31 @@ void Ezito::Node::Throw::Exception::Constructor(const char * name){
 
 
 
+Ezito::Global::Global(){
+    Ezito::Node::Isolate isolate;
+    Ezito::Node::Context context;
+
+    this->val = context->Global();
+
+}
+
+Ezito::Global::Global(const char * name){
+    Ezito::Node::Isolate isolate;
+    Ezito::Node::Context context;
+
+    this->val = context->Global();
+    Ezito::Var::Object gl(this->val);
+    this->val =  gl[name];
+}
+
+Ezito::Global::~Global(){}
 
 
 
-
-
-
+Ezito::Var Ezito::Global::Get(const char * name){
+    Ezito::Var::Object gl(this->val);
+    return gl[name];
+}
 
 
 

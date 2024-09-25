@@ -54,3 +54,29 @@ Ezito::Var::operator  Value(){
 Ezito::Var::operator  Value() const{
     return this->val;
 }
+
+
+
+
+
+
+Ezito::Var::String Ezito::Var::ToString() {
+    return Ezito::Var::String(this->val);
+}
+
+Ezito::Var::Number Ezito::Var::ToNumber(){
+    return Ezito::Var::Number(this->val);
+}
+
+Ezito::Var::Function Ezito::Var::ToFunction(){
+    return Ezito::Var::Function(this->val);
+}
+
+Ezito::Var::Object Ezito::Var::ToObject(){
+    return Ezito::Var::Object(this->val);
+}
+ 
+
+Ezito::Var::Boolean Ezito::Var::ToBoolean(){
+    return Ezito::Var::Boolean(this->val);
+}

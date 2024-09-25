@@ -20,6 +20,13 @@ Ezito::Var::Boolean::Boolean(const Ezito::Var::Boolean & value) {
 }
 
 
+Ezito::Var::Boolean::Boolean(Value value){
+    if(!value.IsEmpty() && value.IsBoolean()){
+        this->val = value;
+        return;
+    };
+    this->val = Ezito::Var::Undefined().Context();
+}
 
 Ezito::Var::Boolean::Boolean(Ezito::Var value) { 
     if(!value.IsEmpty() && value.IsBoolean()){
