@@ -370,7 +370,7 @@ Value::Value(v8::FunctionCallback callback , const char * name ){
     this -> val = Value::CreateValue(callback , name);
 }
 
-Value::Value(v8::FunctionCallback callback , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
+Value::Value(v8::FunctionCallback callback , const char * name , v8::Local<v8::Value> data ){
     this -> val = Value::CreateValue(callback , name , data);
 }
 
@@ -390,7 +390,7 @@ Value::Value(Value::FunctionCallbackWithReturnV8Value callback , const char * na
     this -> val = Value::CreateValue(callback , name );
 }
 
-Value::Value(Value::FunctionCallbackWithReturnV8Value2 callback  , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
+Value::Value(Value::FunctionCallbackWithReturnV8Value2 callback  , const char * name , v8::Local<v8::Value> data ){
     this -> val = Value::CreateValue(callback , name , data);
 }
 
@@ -407,7 +407,7 @@ Value::Value(Value::FunctionCallbackWithReturnValue callback , const char * name
     this -> val = Value::CreateValue(callback , name );
 }
 
-Value::Value(Value::FunctionCallbackWithReturnValue2 callback  , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
+Value::Value(Value::FunctionCallbackWithReturnValue2 callback  , const char * name , v8::Local<v8::Value> data){
     this -> val = Value::CreateValue(callback , name , data);
 }
 
@@ -415,22 +415,7 @@ Value::Value(Value::FunctionCallbackWithReturnValue3 callback , const char * nam
     this -> val = Value::CreateValue(callback , name , data);
 }
 
-
-Value::Value(Value::FunctionCallbackWithReturnVar callback ){
-    this -> val = Value::CreateValue(callback , 0);
-}
-Value::Value(Value::FunctionCallbackWithReturnVar callback , const char * name ){
-    this -> val = Value::CreateValue(callback , name );
-}
-
-Value::Value(Value::FunctionCallbackWithReturnVar2 callback  , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
-    this -> val = Value::CreateValue(callback , name , data);
-}
-
-Value::Value(Value::FunctionCallbackWithReturnVar3 callback , const char * name , void * data){
-    this -> val = Value::CreateValue(callback , name , data);
-}
-
+ 
 
 
 v8::Local<v8::Value> Value::Cast(){
@@ -776,79 +761,7 @@ v8::Local<v8::Value> Value::CreateValue(
 
 
 
-
-
-
-
-
-
-
-v8::Local<v8::Value> Value::CreateValue(
-    Value::FunctionCallbackWithReturnVar callback, 
-    const char * name 
-){
-    Value::CallbackDataTransfer * dataTransfer = (Value::CallbackDataTransfer *)std::malloc(sizeof(Value::CallbackDataTransfer));
-    dataTransfer->callbackVar = callback;
-
-    return Value([](Value::Argumants info){
-        Value external =  info.Data().As<v8::External>();
-        if(external.IsEmpty()) return;
-        Value::CallbackDataTransfer * dataTransfer = static_cast<Value::CallbackDataTransfer *>(
-            external.AsExternal()->Value()
-        );
-        Ezito::Var result =  dataTransfer->callbackVar(info);
-        //std::free(dataTransfer);
-        info.GetReturnValue().Set(result.Context());
-    }, name , Value(dataTransfer));
-}
-
-
-
-v8::Local<v8::Value> Value::CreateValue(
-    Value::FunctionCallbackWithReturnVar2 callback, 
-    const char * name ,
-    v8::Local<v8::Value> data = v8::Local<v8::Value>()
-){
-    Value::CallbackDataTransfer * dataTransfer = (Value::CallbackDataTransfer *)std::malloc(sizeof(Value::CallbackDataTransfer));
-    dataTransfer->callbackVar2 = callback;
-    dataTransfer->userValueData = data;
-
-    return Value([](Value::Argumants info){
-        Value external =  info.Data().As<v8::External>();
-        if(external.IsEmpty()) return;
-        Value::CallbackDataTransfer * dataTransfer = static_cast<Value::CallbackDataTransfer *>(
-            external.AsExternal()->Value()
-        );
-        Ezito::Var result = dataTransfer->callbackVar2(info , dataTransfer->userValueData);
-        //std::free(dataTransfer);
-        info.GetReturnValue().Set(result.Context());
-    }, name , Value(dataTransfer));
-}
-
-
-
-v8::Local<v8::Value> Value::CreateValue(
-    Value::FunctionCallbackWithReturnVar3 callback, 
-    const char * name ,
-    void * data
-){
-    Value::CallbackDataTransfer * dataTransfer = (Value::CallbackDataTransfer *)std::malloc(sizeof(Value::CallbackDataTransfer));
-    dataTransfer->callbackVar3 = callback;
-    dataTransfer->userData = data; 
-
-    return Value([](Value::Argumants info){
-        Value external =  info.Data().As<v8::External>();
-        if(external.IsEmpty()) return;
-        Value::CallbackDataTransfer * dataTransfer = static_cast<Value::CallbackDataTransfer *>(
-            external.AsExternal()->Value()
-        );
-        Ezito::Var result = dataTransfer->callbackVar3(info , dataTransfer->userData);
-        //std::free(dataTransfer); 
-        info.GetReturnValue().Set(result.Context());
-    }, name , Value(dataTransfer));
-}
-
-
+ 
 
 
 
@@ -1413,6 +1326,16 @@ Ezito::Var::Array::Array(v8::MaybeLocal<v8::Value> value){
     this->val = Ezito::Var::Undefined().Context();
 }
 
+Ezito::Var::Array::Array(v8::MaybeLocal<v8::Array> value){
+    Ezito::Var val(value); 
+    if(!val.IsEmpty() && val.IsArray()){
+        this->val = value;
+        this->length = this->val.AsArray()->Length();
+        return;
+    }
+    this->val = Ezito::Var::Undefined().Context();
+}
+
 v8::Local<v8::Value> Ezito::Var::Array::Context() {
     return this->val;
 }
@@ -1798,7 +1721,23 @@ Ezito::Var::Function::Function(v8::Local<v8::Function> value){
     this->val = Ezito::Var::Undefined().Context();
 }
 
+Ezito::Var::Function::Function(v8::MaybeLocal<v8::Value> value){
+    Ezito::Var val(value); 
+    if(!val.IsEmpty() && val.IsFunction()){
+        this->val = val.Context();
+        return;
+    }
+    this->val = Ezito::Var::Undefined().Context();
+}
 
+Ezito::Var::Function::Function(v8::MaybeLocal<v8::Function> value){
+    Ezito::Var val(value); 
+    if(!val.IsEmpty() && val.IsFunction()){
+        this->val = val.Context();
+        return;
+    }
+    this->val = Ezito::Var::Undefined().Context();
+}
 
 
 Ezito::Var Ezito::Var::Function::prototypeCall(const char * name, int count , ...){
@@ -1831,14 +1770,7 @@ Ezito::Var Ezito::Var::Function::prototypeCall(const char * name, int count , ..
 }
 
 
-Ezito::Var::Function::Function(v8::MaybeLocal<v8::Function> value){
-    Ezito::Var val(value); 
-    if(!val.IsEmpty() && val.IsFunction()){
-        this->val = val.Context();
-        return;
-    }
-    this->val = Ezito::Var::Undefined().Context();
-}
+
 
 Ezito::Var::Function::Function(Ezito::FunctionCallback callback, const char * name){
     this->val = Ezito::Var::CreateValue(callback , name);
@@ -1874,19 +1806,6 @@ Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnValue3 callback,
     this->val = Ezito::Var::CreateValue(callback , name , data);
 }
   
-Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnVar callback, const char * name){
-    this->val = Ezito::Var::CreateValue(callback , name );
-}
-
-Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnVar2 callback, const char * name, v8::Local<v8::Value> data ){
-    this->val = Ezito::Var::CreateValue(callback , name , data);
-}
-  
-Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnVar3 callback, const char * name , void * data){
-    this->val = Ezito::Var::CreateValue(callback , name , data);
-}
-   
-
 
 
 v8::Local<v8::Value> Ezito::Var::Function::Context(){
@@ -4092,12 +4011,12 @@ Ezito::Var::Var(Ezito::Var::Boolean value){
 }
 
 
-Ezito::Var::operator  Value(){
+Ezito::Var::operator Value(){
     return this->val;
 }
 
 
-Ezito::Var::operator  Value() const{
+Ezito::Var::operator Value() const{
     return this->val;
 }
 
@@ -4148,11 +4067,23 @@ Ezito::Node::Context::operator v8::Local<v8::Context>()const {return this->val;}
 v8::Context * Ezito::Node::Context::operator ->(){return this->val.operator->();};
 
 
-Ezito::TypeOf::TypeOf(){}
-Ezito::TypeOf::TypeOf(const char * val):str(val){};
-Ezito::TypeOf::~TypeOf(){};
-Ezito::TypeOf::operator char*(){ return (char *)this->str.data();}
-Ezito::TypeOf::operator char*()const {return (char *)this->str.data();};
+Ezito::TypeOf::TypeOf(){
+    this->str = (char *)std::malloc(sizeof(char) * 1);
+}
+
+Ezito::TypeOf::TypeOf(const char * val) : TypeOf(){ 
+    std::free(this->str);
+    this->str = (char *)std::malloc((sizeof(char) * std::strlen(val)) + 1);
+    std::strcpy(this->str , val); 
+};
+
+Ezito::TypeOf::~TypeOf(){
+    std::free(this->str);
+    this->str = 0;
+};
+
+Ezito::TypeOf::operator char*(){ return (char *)this->str;}
+Ezito::TypeOf::operator char*()const {return (char *)this->str;};
 
 
 
@@ -4266,9 +4197,10 @@ Ezito::Node::Throw::Exception::SyntaxError::~SyntaxError(){}
 
 
 
-void Ezito::Node::Throw::Exception::Argumants(const char * name , Ezito::TypeOf type){
-    char * str = (char *)std::malloc(sizeof(char*) * 150);
-    sprintf(str, "Argumant %s must be %s", name , static_cast<char *>(type));
+void Ezito::Node::Throw::Exception::Argumants(const char * name , Ezito::TypeOf type){ 
+    const char * vtype = static_cast<char *>(type);
+    char * str = (char *) std::malloc((sizeof(char) * ( 18 + std::strlen(name) + std::strlen(vtype))) + 1);
+    sprintf(str, "Argumant %s must be %s", name , vtype);
     Ezito::Node::Throw::Exception::TypeError(static_cast<const char *>(str));
     std::free(str);
 };
@@ -4551,6 +4483,7 @@ Ezito::Class::Class(
     
 }
 
+ 
 
 void Ezito::Class::SetMethod(v8::FunctionCallback callback , const char * func_name , v8::Local<v8::Value> data){
     Ezito::Node::Isolate isolate;

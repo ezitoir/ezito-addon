@@ -32,6 +32,5 @@
     "bugs": {
         "url": "https://github.com/ezitoir/ezito-addon/issues"
     },
-    "homepage": "https://github.com/ezitoir/ezito-addon#readme",
-    "gypfile": true
+    "homepage": "https://github.com/ezitoir/ezito-addon#readme"
 }
