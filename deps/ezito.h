@@ -1628,7 +1628,7 @@ namespace Ezito {
     
     class TypeOf {
         private:
-        std::string str;
+        char * str;
         public:
         TypeOf();
         TypeOf(const char *);

@@ -21,10 +21,16 @@ v8::Context * Ezito::Node::Context::operator ->(){return this->val.operator->();
 
 
 Ezito::TypeOf::TypeOf(){}
-Ezito::TypeOf::TypeOf(const char * val):str(val){};
-Ezito::TypeOf::~TypeOf(){};
-Ezito::TypeOf::operator char*(){ return (char *)this->str.data();}
-Ezito::TypeOf::operator char*()const {return (char *)this->str.data();};
+Ezito::TypeOf::TypeOf(const char * val){
+    this->str = (char *)std::malloc(sizeof(char) * std::strlen(val));
+    std::strcpy( this->str , val);
+};
+Ezito::TypeOf::~TypeOf(){
+    std::free(this->str);
+    this->str = 0;
+};
+Ezito::TypeOf::operator char*(){ return (char *)this->str;}
+Ezito::TypeOf::operator char*()const {return (char *)this->str;};
 
 
 
