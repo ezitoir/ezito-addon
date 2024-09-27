@@ -385,30 +385,7 @@ class Value {
      * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
      */
     Value(Value::FunctionCallbackWithReturnValue3 ,  const char * , void *);
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous
-     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
-     */
-    Value(Value::FunctionCallbackWithReturnVar );
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous
-     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
-     */
-    Value(Value::FunctionCallbackWithReturnVar ,  const char * );
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous
-     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
-     */
-    Value(Value::FunctionCallbackWithReturnVar2 ,  const char * , v8::Local<v8::Value> );
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous
-     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
-     */
-    Value(Value::FunctionCallbackWithReturnVar3 ,  const char * , void *); 
+ 
     ~Value();
 
 
@@ -678,38 +655,8 @@ class Value {
         void *
     );
     
-
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous 
-     * you can send retrun Ezito::Var to return;
-     */
-    static v8::Local<v8::Value> CreateValue(
-        Value::FunctionCallbackWithReturnVar ,
-        const char *
-    );
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous
-     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class.
-     * you can send retrun Ezito::Var to return;
-     */
-    static v8::Local<v8::Value> CreateValue(
-        Value::FunctionCallbackWithReturnVar2 ,
-        const char * ,
-        v8::Local<v8::Value> 
-    );
-    /**
-     * create v8 fucntion 
-     * if name set To NULL(0) function set to anonymous
-     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class.
-     * you can send retrun Ezito::Var to return;
-     */
-    static v8::Local<v8::Value> CreateValue(
-        Value::FunctionCallbackWithReturnVar3 ,
-        const char * ,
-        void *
-    );
+    
+ 
     
 
 
@@ -1409,11 +1356,7 @@ namespace Ezito {
 
             Function(Ezito::FunctionCallbackWithReturnValue , const char * );
             Function(Ezito::FunctionCallbackWithReturnValue2 , const char * , v8::Local<v8::Value>);  
-            Function(Ezito::FunctionCallbackWithReturnValue3 , const char * , void * data);
-
-            Function(Ezito::FunctionCallbackWithReturnVar , const char * );
-            Function(Ezito::FunctionCallbackWithReturnVar2 , const char * , v8::Local<v8::Value>);  
-            Function(Ezito::FunctionCallbackWithReturnVar3 , const char * , void * data);
+            Function(Ezito::FunctionCallbackWithReturnValue3 , const char * , void * data); 
             ~Function(); 
             bool IsEmpty();
             void CppValue() = delete;
@@ -1783,6 +1726,7 @@ namespace Ezito {
         v8::Local<v8::Value> external_data;
         v8::Local<v8::String> class_name;
         void * shared_data;
+        void * _ptr;
         public:
         Class();
         
@@ -1815,23 +1759,29 @@ namespace Ezito {
             v8::Local<v8::FunctionTemplate> extends, 
             v8::Local<v8::Value> data
         );
+
         virtual ~Class();
+        
         void SetCleanHook(void(callback)(void *) , void * data);
+        
         void SetMethod(
             v8::FunctionCallback callback ,
             const char * func_name ,
             v8::Local<v8::Value> data = v8::Local<v8::Value>()
         );
+        
         void SetField(
             v8::AccessorGetterCallback getter_callback ,
             v8::AccessorSetterCallback setter_callbak,
             const char * field_name ,
             v8::Local<v8::Value> data = v8::Local<v8::Value>()
         );
+
         void SetConstructor(
             v8::FunctionCallback callback ,
             v8::Local<v8::Value> data = v8::Local<v8::Value>()
         );
+        
         void SetProperty(const char * pro_name , v8::Local<v8::Value> value);
         void SetProperty(v8::AccessorGetterCallback callback , const char * func_name , v8::Local<v8::Value> data);
         void SetName(const char * class_name);
@@ -1844,8 +1794,7 @@ namespace Ezito {
         operator v8::Local<v8::Function>();
         operator v8::Local<v8::Function>() const; 
         operator v8::Local<v8::FunctionTemplate>();
-        operator v8::Local<v8::FunctionTemplate>() const; 
-         
+        operator v8::Local<v8::FunctionTemplate>() const;  
 
         Class operator=(const Class& string);
         Class operator=(const Class* string);

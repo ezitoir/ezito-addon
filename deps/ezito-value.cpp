@@ -370,7 +370,7 @@ Value::Value(v8::FunctionCallback callback , const char * name ){
     this -> val = Value::CreateValue(callback , name);
 }
 
-Value::Value(v8::FunctionCallback callback , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
+Value::Value(v8::FunctionCallback callback , const char * name , v8::Local<v8::Value> data ){
     this -> val = Value::CreateValue(callback , name , data);
 }
 
@@ -390,7 +390,7 @@ Value::Value(Value::FunctionCallbackWithReturnV8Value callback , const char * na
     this -> val = Value::CreateValue(callback , name );
 }
 
-Value::Value(Value::FunctionCallbackWithReturnV8Value2 callback  , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
+Value::Value(Value::FunctionCallbackWithReturnV8Value2 callback  , const char * name , v8::Local<v8::Value> data ){
     this -> val = Value::CreateValue(callback , name , data);
 }
 
@@ -407,7 +407,7 @@ Value::Value(Value::FunctionCallbackWithReturnValue callback , const char * name
     this -> val = Value::CreateValue(callback , name );
 }
 
-Value::Value(Value::FunctionCallbackWithReturnValue2 callback  , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
+Value::Value(Value::FunctionCallbackWithReturnValue2 callback  , const char * name , v8::Local<v8::Value> data){
     this -> val = Value::CreateValue(callback , name , data);
 }
 
@@ -415,22 +415,7 @@ Value::Value(Value::FunctionCallbackWithReturnValue3 callback , const char * nam
     this -> val = Value::CreateValue(callback , name , data);
 }
 
-
-Value::Value(Value::FunctionCallbackWithReturnVar callback ){
-    this -> val = Value::CreateValue(callback , 0);
-}
-Value::Value(Value::FunctionCallbackWithReturnVar callback , const char * name ){
-    this -> val = Value::CreateValue(callback , name );
-}
-
-Value::Value(Value::FunctionCallbackWithReturnVar2 callback  , const char * name , v8::Local<v8::Value> data = v8::Local<v8::Value> ()){
-    this -> val = Value::CreateValue(callback , name , data);
-}
-
-Value::Value(Value::FunctionCallbackWithReturnVar3 callback , const char * name , void * data){
-    this -> val = Value::CreateValue(callback , name , data);
-}
-
+ 
 
 
 v8::Local<v8::Value> Value::Cast(){
@@ -776,79 +761,7 @@ v8::Local<v8::Value> Value::CreateValue(
 
 
 
-
-
-
-
-
-
-
-v8::Local<v8::Value> Value::CreateValue(
-    Value::FunctionCallbackWithReturnVar callback, 
-    const char * name 
-){
-    Value::CallbackDataTransfer * dataTransfer = (Value::CallbackDataTransfer *)std::malloc(sizeof(Value::CallbackDataTransfer));
-    dataTransfer->callbackVar = callback;
-
-    return Value([](Value::Argumants info){
-        Value external =  info.Data().As<v8::External>();
-        if(external.IsEmpty()) return;
-        Value::CallbackDataTransfer * dataTransfer = static_cast<Value::CallbackDataTransfer *>(
-            external.AsExternal()->Value()
-        );
-        Ezito::Var result =  dataTransfer->callbackVar(info);
-        //std::free(dataTransfer);
-        info.GetReturnValue().Set(result.Context());
-    }, name , Value(dataTransfer));
-}
-
-
-
-v8::Local<v8::Value> Value::CreateValue(
-    Value::FunctionCallbackWithReturnVar2 callback, 
-    const char * name ,
-    v8::Local<v8::Value> data = v8::Local<v8::Value>()
-){
-    Value::CallbackDataTransfer * dataTransfer = (Value::CallbackDataTransfer *)std::malloc(sizeof(Value::CallbackDataTransfer));
-    dataTransfer->callbackVar2 = callback;
-    dataTransfer->userValueData = data;
-
-    return Value([](Value::Argumants info){
-        Value external =  info.Data().As<v8::External>();
-        if(external.IsEmpty()) return;
-        Value::CallbackDataTransfer * dataTransfer = static_cast<Value::CallbackDataTransfer *>(
-            external.AsExternal()->Value()
-        );
-        Ezito::Var result = dataTransfer->callbackVar2(info , dataTransfer->userValueData);
-        //std::free(dataTransfer);
-        info.GetReturnValue().Set(result.Context());
-    }, name , Value(dataTransfer));
-}
-
-
-
-v8::Local<v8::Value> Value::CreateValue(
-    Value::FunctionCallbackWithReturnVar3 callback, 
-    const char * name ,
-    void * data
-){
-    Value::CallbackDataTransfer * dataTransfer = (Value::CallbackDataTransfer *)std::malloc(sizeof(Value::CallbackDataTransfer));
-    dataTransfer->callbackVar3 = callback;
-    dataTransfer->userData = data; 
-
-    return Value([](Value::Argumants info){
-        Value external =  info.Data().As<v8::External>();
-        if(external.IsEmpty()) return;
-        Value::CallbackDataTransfer * dataTransfer = static_cast<Value::CallbackDataTransfer *>(
-            external.AsExternal()->Value()
-        );
-        Ezito::Var result = dataTransfer->callbackVar3(info , dataTransfer->userData);
-        //std::free(dataTransfer); 
-        info.GetReturnValue().Set(result.Context());
-    }, name , Value(dataTransfer));
-}
-
-
+ 
 
 
 

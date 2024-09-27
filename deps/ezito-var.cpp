@@ -46,12 +46,12 @@ Ezito::Var::Var(Ezito::Var::Boolean value){
 }
 
 
-Ezito::Var::operator  Value(){
+Ezito::Var::operator Value(){
     return this->val;
 }
 
 
-Ezito::Var::operator  Value() const{
+Ezito::Var::operator Value() const{
     return this->val;
 }
 

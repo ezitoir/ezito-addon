@@ -423,6 +423,7 @@ Ezito::Class::Class(
     
 }
 
+ 
 
 void Ezito::Class::SetMethod(v8::FunctionCallback callback , const char * func_name , v8::Local<v8::Value> data){
     Ezito::Node::Isolate isolate;

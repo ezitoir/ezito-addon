@@ -136,7 +136,8 @@ Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnValue3 callback,
     this->val = Ezito::Var::CreateValue(callback , name , data);
 }
   
-Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnVar callback, const char * name){
+/**
+ * Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnVar callback, const char * name){
     this->val = Ezito::Var::CreateValue(callback , name );
 }
 
@@ -149,6 +150,7 @@ Ezito::Var::Function::Function(Ezito::FunctionCallbackWithReturnVar3 callback, c
 }
    
 
+ */
 
 
 v8::Local<v8::Value> Ezito::Var::Function::Context(){
