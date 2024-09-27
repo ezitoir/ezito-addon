@@ -20,15 +20,21 @@ Ezito::Node::Context::operator v8::Local<v8::Context>()const {return this->val;}
 v8::Context * Ezito::Node::Context::operator ->(){return this->val.operator->();};
 
 
-Ezito::TypeOf::TypeOf(){}
-Ezito::TypeOf::TypeOf(const char * val){
-    this->str = (char *)std::malloc(sizeof(char) * std::strlen(val));
-    std::strcpy( this->str , val);
+Ezito::TypeOf::TypeOf(){
+    this->str = (char *)std::malloc(sizeof(char) * 1);
+}
+
+Ezito::TypeOf::TypeOf(const char * val) : TypeOf(){ 
+    std::free(this->str);
+    this->str = (char *)std::malloc((sizeof(char) * std::strlen(val)) + 1);
+    std::strcpy(this->str , val); 
 };
+
 Ezito::TypeOf::~TypeOf(){
     std::free(this->str);
     this->str = 0;
 };
+
 Ezito::TypeOf::operator char*(){ return (char *)this->str;}
 Ezito::TypeOf::operator char*()const {return (char *)this->str;};
 
@@ -144,9 +150,10 @@ Ezito::Node::Throw::Exception::SyntaxError::~SyntaxError(){}
 
 
 
-void Ezito::Node::Throw::Exception::Argumants(const char * name , Ezito::TypeOf type){
-    char * str = (char *)std::malloc(sizeof(char*) * 150);
-    sprintf(str, "Argumant %s must be %s", name , static_cast<char *>(type));
+void Ezito::Node::Throw::Exception::Argumants(const char * name , Ezito::TypeOf type){ 
+    const char * vtype = static_cast<char *>(type);
+    char * str = (char *) std::malloc((sizeof(char) * ( 18 + std::strlen(name) + std::strlen(vtype))) + 1);
+    sprintf(str, "Argumant %s must be %s", name , vtype);
     Ezito::Node::Throw::Exception::TypeError(static_cast<const char *>(str));
     std::free(str);
 };
