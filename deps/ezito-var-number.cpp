@@ -2,6 +2,7 @@
 
 
 #include "ezito.h" 
+
 Ezito::Var::Number::Number(){ 
     this->val = Ezito::Var::Undefined().Context();
 }

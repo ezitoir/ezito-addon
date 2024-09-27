@@ -1,21 +1,22 @@
 
 
 
-
-#define V8_ENABLE_CHECKS
-
+ 
 #include <stdarg.h>
+#include <string.h>  
+#include <stdlib.h>
+#include <stdio.h>
 #include <cstring>
-#include <string> 
-#include "node.h"
 
+#include "node.h"
 
 #ifndef V8_EZITO_VALUE_PARENT_HEADER
 #define V8_EZITO_VALUE_PARENT_HEADER 
-
+ 
 
 
 class Value;  
+
 
 namespace Ezito {
     typedef struct CleanHookDataTransfer{ 
@@ -58,6 +59,7 @@ namespace Ezito {
 
 
 
+ 
 
 
 
@@ -187,10 +189,6 @@ class Value {
      * create v8::Local::Value::String
      */
     Value(const char *);
-    /**
-     * create v8::Local::Value::String
-     */
-    Value(std::string);
     /**
      * create v8::Local::Value::External
      */
@@ -333,6 +331,12 @@ class Value {
      * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
      */
     Value(v8::FunctionCallback , const char *  , v8::Local<v8::Value> );
+    /**
+     * create v8 fucntion 
+     * if name set To NULL(0) function set to anonymous
+     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
+     */
+    Value(v8::FunctionCallback , const char *  , void *);
     /**
      * create v8 fucntion 
      * if name set To NULL(0) function set to anonymous
@@ -520,10 +524,6 @@ class Value {
      */
     static v8::Local<v8::Value> CreateValue(const char*);
     /**
-     * create v8::Local::Value::String
-     */
-    static v8::Local<v8::Value> CreateValue(std::string); 
-    /**
      * short int(16 bits) -32768 to 32768
      * create v8::Local::Value::Int32 
      */
@@ -600,6 +600,16 @@ class Value {
         v8::Local<v8::Value> 
     );
 
+    /**
+     * create v8 fucntion 
+     * if name set To NULL(0) function set to anonymous
+     * v8::Lcoal::Value data , set to args.Data() to share data between functions or methods of class
+     */
+    static v8::Local<v8::Value> CreateValue(
+        Value::FunctionCallback ,
+        const char *,
+        void *
+    );
 
 
     /**
@@ -1845,4 +1855,5 @@ namespace Ezito {
 };
 
  
+
 #endif
