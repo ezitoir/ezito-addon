@@ -51,7 +51,23 @@ Ezito::Var::Function::Function(v8::Local<v8::Function> value){
     this->val = Ezito::Var::Undefined().Context();
 }
 
+Ezito::Var::Function::Function(v8::MaybeLocal<v8::Value> value){
+    Ezito::Var val(value); 
+    if(!val.IsEmpty() && val.IsFunction()){
+        this->val = val.Context();
+        return;
+    }
+    this->val = Ezito::Var::Undefined().Context();
+}
 
+Ezito::Var::Function::Function(v8::MaybeLocal<v8::Function> value){
+    Ezito::Var val(value); 
+    if(!val.IsEmpty() && val.IsFunction()){
+        this->val = val.Context();
+        return;
+    }
+    this->val = Ezito::Var::Undefined().Context();
+}
 
 
 Ezito::Var Ezito::Var::Function::prototypeCall(const char * name, int count , ...){
@@ -84,14 +100,7 @@ Ezito::Var Ezito::Var::Function::prototypeCall(const char * name, int count , ..
 }
 
 
-Ezito::Var::Function::Function(v8::MaybeLocal<v8::Function> value){
-    Ezito::Var val(value); 
-    if(!val.IsEmpty() && val.IsFunction()){
-        this->val = val.Context();
-        return;
-    }
-    this->val = Ezito::Var::Undefined().Context();
-}
+
 
 Ezito::Var::Function::Function(Ezito::FunctionCallback callback, const char * name){
     this->val = Ezito::Var::CreateValue(callback , name);

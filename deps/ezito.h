@@ -1397,6 +1397,7 @@ namespace Ezito {
             Function(Ezito::Var);
             Function(v8::Local<v8::Value>);
             Function(v8::Local<v8::Function>);
+            Function(v8::MaybeLocal<v8::Value>);
             Function(v8::MaybeLocal<v8::Function>);
 
             Function(Ezito::FunctionCallback , const char * );
