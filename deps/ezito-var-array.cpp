@@ -75,6 +75,16 @@ Ezito::Var::Array::Array(v8::MaybeLocal<v8::Value> value){
     this->val = Ezito::Var::Undefined().Context();
 }
 
+Ezito::Var::Array::Array(v8::MaybeLocal<v8::Array> value){
+    Ezito::Var val(value); 
+    if(!val.IsEmpty() && val.IsArray()){
+        this->val = value;
+        this->length = this->val.AsArray()->Length();
+        return;
+    }
+    this->val = Ezito::Var::Undefined().Context();
+}
+
 v8::Local<v8::Value> Ezito::Var::Array::Context() {
     return this->val;
 }

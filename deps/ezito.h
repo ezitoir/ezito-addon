@@ -1064,6 +1064,7 @@ namespace Ezito {
             Array(v8::Local<v8::Value>);
             Array(v8::Local<v8::Array>);
             Array(v8::MaybeLocal<v8::Value>);
+            Array(v8::MaybeLocal<v8::Array>);
             ~Array(); 
             bool IsEmpty();
             void CppValue() = delete;
@@ -1094,7 +1095,7 @@ namespace Ezito {
             void Push(bool);
             void Push(Ezito::Var);
             void Push(v8::Local<v8::Value>);
-            void Push(v8::MaybeLocal<v8::Value>);
+            void Push(v8::MaybeLocal<v8::Value>); 
 
             operator Ezito::Var();
             operator Ezito::Var() const;
