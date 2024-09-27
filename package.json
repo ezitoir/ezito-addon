@@ -1,6 +1,6 @@
 {
     "name": "ezito-addon",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Easier to use than v8 and node for nodejs ",
     "main": "index.js",
     "keywords": [
